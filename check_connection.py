@@ -2,7 +2,10 @@
 Runs sanity checks before EDA.
 """
 
-from sqlalchemy import create_engine, inspect
+import pandas as pd
+import polars as pl
+from sqlalchemy import inspect
+from ingest import get_engine
 
 EXPECTED_TABLES = {
     "olist_customers_dataset",
@@ -17,12 +20,18 @@ EXPECTED_TABLES = {
 }
 
 def main():
-    
-    # 1. Connect to azure account
-    engine = create_engine(...)
 
-    # 2. Try to read into polars and pandas try / except blocks?
-    # TODO
+    # 1. Connect to azure account
+    engine = get_engine()
+
+    # 2. Try to read into polars and pandas
+    try:
+        pd.read_sql("SELECT TOP 1 * FROM olist_orders_dataset", engine)
+        pl.read_database("SELECT TOP 1 * FROM olist_orders_dataset", engine)
+    except Exception as e:
+        print(f"Failed to read data: {e}")
+        engine.dispose()
+        return
 
     existing = set(inspect(engine).get_table_names())
     missing = EXPECTED_TABLES - existing
@@ -30,7 +39,7 @@ def main():
     # 3. Close connection
     engine.dispose()
     
-    # 4. If all is good then print "Ready for EDA!" 
+    # 4. If no missing tables then print "Ready for EDA!" 
     if missing:
         print(f"Missing {len(missing)} table(s): {missing}")
         return 0
