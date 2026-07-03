@@ -1,0 +1,5 @@
+Dataset: category_translation
+Shape: 71 rows x 2 columns
+Columns:
+  - product_category_name (String)
+  - product_category_name_english (String)

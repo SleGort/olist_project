@@ -1,0 +1,87 @@
+Dataset: customers
+Shape: 99441 rows x 5 columns
+Columns:
+  - customer_id (String)
+  - customer_unique_id (String)
+  - customer_zip_code_prefix (Int64)
+  - customer_city (String)
+  - customer_state (String)
+
+Dataset: geolocation
+Shape: 1000163 rows x 5 columns
+Columns:
+  - geolocation_zip_code_prefix (Int64)
+  - geolocation_lat (Float64)
+  - geolocation_lng (Float64)
+  - geolocation_city (String)
+  - geolocation_state (String)
+
+Dataset: order_items
+Shape: 112650 rows x 7 columns
+Columns:
+  - order_id (String)
+  - order_item_id (Int64)
+  - product_id (String)
+  - seller_id (String)
+  - shipping_limit_date (String)
+  - price (Float64)
+  - freight_value (Float64)
+
+Dataset: order_payments
+Shape: 103886 rows x 5 columns
+Columns:
+  - order_id (String)
+  - payment_sequential (Int64)
+  - payment_type (String)
+  - payment_installments (Int64)
+  - payment_value (Float64)
+
+Dataset: order_reviews
+Shape: 99224 rows x 7 columns
+Columns:
+  - review_id (String)
+  - order_id (String)
+  - review_score (Int64)
+  - review_comment_title (String)
+  - review_comment_message (String)
+  - review_creation_date (String)
+  - review_answer_timestamp (String)
+
+Dataset: orders
+Shape: 99441 rows x 8 columns
+Columns:
+  - order_id (String)
+  - customer_id (String)
+  - order_status (String)
+  - order_purchase_timestamp (String)
+  - order_approved_at (String)
+  - order_delivered_carrier_date (String)
+  - order_delivered_customer_date (String)
+  - order_estimated_delivery_date (String)
+
+Dataset: products
+Shape: 32951 rows x 9 columns
+Columns:
+  - product_id (String)
+  - product_category_name (String)
+  - product_name_lenght (Float64)
+  - product_description_lenght (Float64)
+  - product_photos_qty (Float64)
+  - product_weight_g (Float64)
+  - product_length_cm (Float64)
+  - product_height_cm (Float64)
+  - product_width_cm (Float64)
+
+Dataset: sellers
+Shape: 3095 rows x 4 columns
+Columns:
+  - seller_id (String)
+  - seller_zip_code_prefix (Int64)
+  - seller_city (String)
+  - seller_state (String)
+
+Dataset: category_translation
+Shape: 71 rows x 2 columns
+Columns:
+  - product_category_name (String)
+  - product_category_name_english (String)

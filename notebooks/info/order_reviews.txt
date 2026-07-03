@@ -1,0 +1,10 @@
+Dataset: order_reviews
+Shape: 99224 rows x 7 columns
+Columns:
+  - review_id (String)
+  - order_id (String)
+  - review_score (Int64)
+  - review_comment_title (String)
+  - review_comment_message (String)
+  - review_creation_date (String)
+  - review_answer_timestamp (String)
