@@ -16,5 +16,6 @@ wheels/
 CLAUDE.md
 
 checks.txt
+tests.txt
 
 notebooks/power_bi_exports/
