@@ -20,3 +20,5 @@ checks.txt
 tests.txt
 
 notebooks/power_bi_exports/
+
+logs/
