@@ -1,0 +1,7 @@
+Dataset: sellers
+Shape: 3095 rows x 4 columns
+Columns:
+  - seller_id (String)
+  - seller_zip_code_prefix (Int64)
+  - seller_city (String)
+  - seller_state (String)

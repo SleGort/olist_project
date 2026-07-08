@@ -1,0 +1,8 @@
+Dataset: geolocation
+Shape: 1000163 rows x 5 columns
+Columns:
+  - geolocation_zip_code_prefix (Int64)
+  - geolocation_lat (Float64)
+  - geolocation_lng (Float64)
+  - geolocation_city (String)
+  - geolocation_state (String)

@@ -1,0 +1,10 @@
+Dataset: order_items
+Shape: 112650 rows x 7 columns
+Columns:
+  - order_id (String)
+  - order_item_id (Int64)
+  - product_id (String)
+  - seller_id (String)
+  - shipping_limit_date (String)
+  - price (Float64)
+  - freight_value (Float64)

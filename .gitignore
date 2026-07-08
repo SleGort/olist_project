@@ -11,3 +11,12 @@ wheels/
 
 
 .env
+
+# Claude
+CLAUDE.md
+.claude
+
+checks.txt
+tests.txt
+
+notebooks/power_bi_exports/

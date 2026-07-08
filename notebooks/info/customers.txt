@@ -1,0 +1,8 @@
+Dataset: customers
+Shape: 99441 rows x 5 columns
+Columns:
+  - customer_id (String)
+  - customer_unique_id (String)
+  - customer_zip_code_prefix (Int64)
+  - customer_city (String)
+  - customer_state (String)
