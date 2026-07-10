@@ -1,4 +1,4 @@
--- One row per order_id: latest review score, since review_reviews is not unique per order
+-- One row per order_id: latest review score, since order_reviews is not unique per order
 -- (see notebooks/eda.ipynb, cell "order_review" under dim_order construction).
 
 with ranked as (

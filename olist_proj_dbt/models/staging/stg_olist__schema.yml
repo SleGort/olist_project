@@ -2,72 +2,116 @@ version: 2
 
 models:
   - name: stg_olist__customers
+    description: >
+      One row per customer. Light cleaning only: drops customer_unique_id
+      (not actually unique across rows, see notebooks/eda.ipynb Bronze ->
+      Silver). Source: olist_customers_dataset.
     columns:
       - name: customer_id
+        description: Primary key. Unique per customer record.
         tests:
           - unique
           - not_null
 
   - name: stg_olist__geolocation
+    description: >
+      One row per zip_code_prefix, deduplicated from the raw table (~1M rows
+      -> ~19K). city/state picked independently by most-frequent value per
+      prefix; lat/lng averaged. Source: olist_geolocation_dataset.
     columns:
       - name: zip_code_prefix
+        description: Primary key. Brazilian postal code prefix.
         tests:
           - unique
           - not_null
 
   - name: stg_olist__order_items
+    description: >
+      One row per order item (an order can have multiple items/lines).
+      shipping_limit_date cast to datetime2. Source: olist_order_items_dataset.
     columns:
       - name: order_id
+        description: FK to stg_olist__orders. Not unique -- multiple items per order.
         tests:
           - not_null
 
   - name: stg_olist__order_payments
+    description: >
+      One row per payment method used on an order (an order can be split
+      across multiple methods via payment_sequential). No cleaning applied.
+      Source: olist_order_payments_dataset.
     columns:
       - name: order_id
+        description: FK to stg_olist__orders. Not unique -- multiple payment rows per order.
         tests:
           - not_null
 
   - name: stg_olist__order_reviews
+    description: >
+      One row per review. Drops review_comment_title/message (>50% null, no
+      NLP scope); casts review_creation_date/review_answer_timestamp to
+      datetime2. review_id is not unique per row -- the same review can occur
+      against multiple orders. Source: olist_order_reviews_dataset.
     columns:
       - name: review_id
+        description: Not unique alone -- combine with order_id as a composite key.
         tests:
           - not_null
       - name: order_id
+        description: FK to stg_olist__orders.
         tests:
           - not_null
 
   - name: stg_olist__orders
+    description: >
+      One row per order. Casts all 5 timestamp columns (purchase, approved,
+      delivered to carrier, delivered to customer, estimated delivery) to
+      datetime2. Source: olist_orders_dataset.
     columns:
       - name: order_id
+        description: Primary key.
         tests:
           - unique
           - not_null
       - name: customer_id
+        description: "FK to stg_olist__customers. 1:1 with order_id in this dataset."
         tests:
           - unique
           - not_null
 
   - name: stg_olist__products
+    description: >
+      One row per product. No cleaning applied (nulls in
+      product_category_name kept -- product_id is still useful for joins).
+      Source: olist_products_dataset.
     columns:
       - name: product_id
+        description: Primary key.
         tests:
           - unique
           - not_null
 
   - name: stg_olist__sellers
+    description: "One row per seller. No cleaning applied. Source: olist_sellers_dataset."
     columns:
       - name: seller_id
+        description: Primary key.
         tests:
           - unique
           - not_null
 
   - name: stg_olist__category_translation
+    description: >
+      Lookup table: Portuguese product_category_name -> English translation.
+      No cleaning applied. Source: product_category_name_translation.
     columns:
       - name: product_category_name
+        description: Primary key (Portuguese category name).
         tests:
           - unique
           - not_null
       - name: product_category_name_english
+        description: English translation of product_category_name.
         tests:
           - unique
           - not_null

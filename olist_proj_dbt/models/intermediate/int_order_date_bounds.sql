@@ -1,6 +1,6 @@
--- Min/max order_purchase_timestamp date, feeding dim_date's calendar spine.
--- Depends only on stg_olist__orders 
--- cell building `_bounds` from orders_cleaned, ahead of dim_date).
+-- Min/max order_purchase_timestamp date, feeding dim_date's calendar spine
+-- (see notebooks/eda.ipynb, cell building `_bounds` from orders_cleaned).
+-- Depends only on stg_olist__orders, not on fact_sales.
 
 select 
     min(order_purchase_timestamp) as start_date,

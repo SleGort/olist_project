@@ -27,5 +27,3 @@ from {{ source('olist', 'olist_geolocation_dataset') }} s
 left join city_ranks on s.geolocation_zip_code_prefix = city_ranks.geolocation_zip_code_prefix and city_ranks.rk = 1
 left join state_ranks on s.geolocation_zip_code_prefix = state_ranks.geolocation_zip_code_prefix and state_ranks.rk = 1
 group by s.geolocation_zip_code_prefix, city_ranks.geolocation_city, state_ranks.geolocation_state
-
-
