@@ -1,0 +1,123 @@
+version: 2
+
+models:
+  - name: fact_sales
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_order')
+                field: order_id
+          - relationships:
+              arguments:
+                to: ref('dim_payments')
+                field: order_id
+              config:
+                severity: warn
+      - name: seller_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_seller')
+                field: seller_id
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_product')
+                field: product_id
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customer')
+                field: customer_id
+      - name: order_purchase_date_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: dim_order
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_payments')
+                field: order_id
+              config:
+                severity: warn
+
+  - name: dim_payments
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_order')
+                field: order_id
+
+  - name: dim_product
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_customer
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_seller
+    columns:
+      - name: seller_id
+        tests:
+          - unique
+          - not_null
+      - name: seller_zip_code_prefix
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_geolocation')
+                field: zip_code_prefix
+              config:
+                severity: warn
+
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_geolocation
+    columns:
+      - name: zip_code_prefix
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_seller_month
+    columns:
+      - name: seller_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_seller')
+                field: seller_id

@@ -1,8 +1,3 @@
--- Worked example establishing the marts pattern. Remaining gold-layer tables
--- (fact_sales, fact_seller_month, dim_seller, dim_product, dim_customer,
--- dim_payments, dim_date, dim_geolocation) still need to be built to replicate
--- notebooks/eda.ipynb's Silver -> Gold section (cell "Silver to Gold - Reshaping
--- the data for business analysis").
 select
     o.order_id,
     o.order_status,
