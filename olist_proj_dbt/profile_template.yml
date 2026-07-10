@@ -4,7 +4,7 @@ fixed:
   port: 1433
   schema: dbo
   authentication: CLI
-  threads: 1
+  threads: 4
   retries: 5
 
 prompts:

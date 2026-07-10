@@ -65,4 +65,9 @@ models:
     columns:
       - name: product_category_name
         tests:
+          - unique
+          - not_null
+      - name: product_category_name_english
+        tests:
+          - unique
           - not_null
