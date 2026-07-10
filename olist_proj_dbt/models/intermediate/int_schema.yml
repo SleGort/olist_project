@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: int_order_review_latest
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+  - name: int_order_date_bounds
+    columns:
+      - name: start_date
+        tests:
+          - not_null
+      - name: end_date
+        tests:
+          - not_null
