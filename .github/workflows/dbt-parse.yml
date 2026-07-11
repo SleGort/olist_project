@@ -1,0 +1,60 @@
+name: dbt parse
+
+# Deploy-readiness gate: runs only on pull requests targeting `main`.
+# `main` is treated as the "deployable" branch -- if this check is red, the
+# PR shouldn't be merged, because `dbt parse` found a broken model
+# (bad ref()/source(), invalid Jinja, or malformed schema.yml). 
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      # dbt-sqlserver depends on pyodbc, whose compiled extension links
+      # against unixODBC's libodbc.so at import time -- without this,
+      # `dbt parse` fails before it even gets to reading the project files.
+      - name: Install unixODBC
+        run: sudo apt-get update && sudo apt-get install -y unixodbc
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync
+
+      # dbt needs a profiles.yml to know which adapter/target to parse
+      # against, but `dbt parse` never opens a database connection -- it
+      # only builds the project's manifest (validates ref()/source() calls,
+      # Jinja syntax, and schema.yml structure). So the credentials below
+      # are throwaway placeholders, not real secrets.
+      - name: Write a placeholder dbt profile
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          olist_proj:
+            outputs:
+              ci:
+                type: sqlserver
+                driver: 'ODBC Driver 18 for SQL Server'
+                server: placeholder.database.windows.net
+                port: 1433
+                database: placeholder_db
+                schema: dbo
+                authentication: sql
+                UID: placeholder_user
+                PWD: placeholder_password
+                threads: 4
+            target: ci
+          EOF
+
+      - name: dbt parse
+        working-directory: olist_proj_dbt
+        run: uv run --project .. dbt parse

@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: int_order_review_latest
+    description: >
+      One row per order_id: the review_score of the most recent review
+      (by review_creation_date). Collapses stg_olist__order_reviews, which is
+      not unique per order, so downstream joins to dim_order don't fan out.
+    columns:
+      - name: order_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: int_order_date_bounds
+    description: >
+      Single-row min/max of stg_olist__orders.order_purchase_timestamp,
+      feeding dim_date's calendar spine. Depends only on stg_olist__orders --
+      not on fact_sales.
+    columns:
+      - name: start_date
+        description: Earliest order_purchase_timestamp across all orders.
+        tests:
+          - not_null
+      - name: end_date
+        description: Latest order_purchase_timestamp across all orders.
+        tests:
+          - not_null

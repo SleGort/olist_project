@@ -1,0 +1,186 @@
+version: 2
+
+models:
+  - name: fact_sales
+    description: >
+      Atomic fact table, grain: one row per order item. Holds only FKs +
+      additive measures (price, freight_value, total_cost) -- every average,
+      distribution, or rate is left for Power BI to compute. Built by joining
+      stg_olist__order_items to stg_olist__orders (see notebooks/eda.ipynb,
+      "fact_sales" cell).
+    columns:
+      - name: order_id
+        description: FK to dim_order and dim_payments.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_order')
+                field: order_id
+          - relationships:
+              arguments:
+                to: ref('dim_payments')
+                field: order_id
+              config:
+                severity: warn
+      - name: seller_id
+        description: FK to dim_seller.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_seller')
+                field: seller_id
+      - name: product_id
+        description: FK to dim_product.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_product')
+                field: product_id
+      - name: customer_id
+        description: FK to dim_customer.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customer')
+                field: customer_id
+      - name: order_purchase_date_key
+        description: FK to dim_date. YYYYMMDD integer surrogate key.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: dim_order
+    description: >
+      One row per order: order-level "why" attributes (status, delivery
+      dates) plus the latest review_score. See notebooks/eda.ipynb,
+      "dim_order" cell.
+    columns:
+      - name: order_id
+        description: >
+          Primary key. Related 1:1 to dim_payments.order_id, though a small
+          number of orders (Kaggle data gap) have no matching payment row --
+          see the warn-severity relationships test below.
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_payments')
+                field: order_id
+              config:
+                severity: warn
+
+  - name: dim_payments
+    description: >
+      One row per order: payment rows rolled up. Primary method = the row
+      with the lowest payment_sequential; payment_value summed across all
+      methods used. See notebooks/eda.ipynb, "dim_payments" cell.
+    columns:
+      - name: order_id
+        description: "Primary key. Related 1:1 to dim_order.order_id."
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_order')
+                field: order_id
+
+  - name: dim_product
+    description: >
+      One row per product, with product_category_name translated to English.
+      See notebooks/eda.ipynb, "dim_product" cell.
+    columns:
+      - name: product_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_customer
+    description: >
+      One row per customer: geography attributes only (customer_id is 1:1
+      with an order in this dataset). See notebooks/eda.ipynb, "dim_customer"
+      cell.
+    columns:
+      - name: customer_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_seller
+    description: >
+      One row per seller: base attributes (city, state, zip prefix) plus two
+      enrichments computed from fact_seller_month -- months_active (count of
+      distinct months with any revenue) and revenue_risk_score (normalized
+      OLS slope of monthly revenue over month_index, fit on month_index 4-23
+      for sellers with >= 12 months of data in that band; null otherwise).
+      See notebooks/eda.ipynb, "dim_seller enrichment" cells.
+    columns:
+      - name: seller_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: seller_zip_code_prefix
+        description: >
+          FK to dim_geolocation. A small number of zip prefixes (Kaggle data
+          gap) don't appear in dim_geolocation -- see the warn-severity
+          relationships test below.
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_geolocation')
+                field: zip_code_prefix
+              config:
+                severity: warn
+
+  - name: dim_date
+    description: >
+      Contiguous calendar spine, one row per day spanning
+      min(order_purchase_timestamp) to max(order_purchase_timestamp) -- not
+      just the dates that appear in the data. Lets Power BI mark this as a
+      Date Table with a clean year > quarter > month hierarchy. See
+      notebooks/eda.ipynb, "dim_date" cell.
+    columns:
+      - name: date_key
+        description: Primary key. YYYYMMDD integer surrogate key.
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_geolocation
+    description: >
+      One row per zip_code_prefix, shared by dim_seller and dim_customer so
+      both relate to a single geography dimension without duplicating
+      lat/lng. See notebooks/eda.ipynb, "dim_geolocation" cell.
+    columns:
+      - name: zip_code_prefix
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_seller_month
+    description: >
+      Fact table, grain: one row per (seller, month_index). Sums total_cost
+      from fact_sales joined to dim_date, per seller per month. Feeds
+      dim_seller's months_active and revenue_risk_score enrichments. See
+      notebooks/eda.ipynb, "fact_seller_month" cell.
+    columns:
+      - name: seller_id
+        description: FK to dim_seller.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_seller')
+                field: seller_id
