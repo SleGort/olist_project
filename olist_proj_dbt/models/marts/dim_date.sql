@@ -4,7 +4,7 @@ with bounds as (
     select
         cast(start_date as date) as start_date,
         cast(end_date as date) as end_date
-    from {{ ref('int_order_date_bounds') }}
+    from {{ ref('int_ordr_date_bounds') }}
 ),
 
 date_range as (
