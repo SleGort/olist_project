@@ -266,3 +266,13 @@ this project deliberately avoids).
   (foreign keys, etc.), before any cleaning.
 - **`PBI Data Model.png`** — the final star-schema model, as it appears
   in Power BI.
+
+## Diagrams
+
+**Raw Kaggle schema** — how the source tables relate before any cleaning:
+
+![Raw schema](schema.png)
+
+**Final Power BI data model** — the star schema `olist.pbix` is built on:
+
+![Power BI data model](PBI%20Data%20Model.png)
