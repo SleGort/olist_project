@@ -42,10 +42,10 @@ dated as (
 -- Final selection of the date attributes, including a month_index for ordering
 select
     date_key,
+    month_name,
     full_date,
     year,
     quarter,
     month,
-    month_name,
     (year - min(year) over ()) * 12 + month - 9 as month_index
 from dated

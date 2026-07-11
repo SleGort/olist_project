@@ -36,9 +36,9 @@ revenue_risk as (
 
 select
     s.seller_id,
-    s.seller_zip_code_prefix,
     s.seller_city,
     s.seller_state,
+    s.seller_zip_code_prefix,
     ma.months_active,
     rr.revenue_risk_score
 from {{ ref('stg_olist__sellers') }} as s
