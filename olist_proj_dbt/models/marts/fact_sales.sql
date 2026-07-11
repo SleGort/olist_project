@@ -1,8 +1,3 @@
--- Grain: one row per order item (see notebooks/eda.ipynb, "fact_sales" cell).
--- order_items is already at item grain; only bring order_purchase_timestamp
--- + customer_id onto each line so date/customer dimensions can connect.
--- LEFT JOIN keeps every item row, so grain must not fan out.
-
 with cleaned_orders as (
     select
         order_id,

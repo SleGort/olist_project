@@ -1,8 +1,5 @@
 -- Contiguous calendar spine spanning the order purchase dates (see
--- notebooks/eda.ipynb, "dim_date" cell). Not just the dates that appear --
--- every day in [min(order_purchase_timestamp), max(order_purchase_timestamp)]
--- so Power BI can mark it as a Date Table with a clean hierarchy.
-
+-- notebooks/eda.ipynb, "dim_date" cell). 
 with bounds as (
     select
         cast(start_date as date) as start_date,
@@ -10,23 +7,19 @@ with bounds as (
     from {{ ref('int_order_date_bounds') }}
 ),
 
--- Number of days to generate: enough to cover the widest possible order
--- date range without relying on a recursive CTE (which needs MAXRECURSION
--- set on the outer statement -- not available once dbt wraps this query
--- in CREATE TABLE AS). 4 cross-joined 10-value CTEs give up to 10,000 rows.
-digits as (
-    select column1 as digit
-    from (values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9)) as d(column1)
+date_range as (
+    select
+        datediff(day, start_date, end_date) + 1 as days
+    from bounds
 ),
-
+-- Generating a sequence of days to add to the start_date
+-- e.g 1, 2, 3, ..., n where n = datediff(day, start_date, end_date)
 tally as (
-    select row_number() over (order by (select null)) - 1 as n
-    from digits as d1
-    cross join digits as d2
-    cross join digits as d3
-    cross join digits as d4
+    select top (select days from date_range) row_number() over (order by (select null)) - 1 as n
+    from sys.all_columns
 ),
 
+-- Generating the contiguous calendar spine by adding the sequence of days to the start_date
 date_spine as (
     select dateadd(day, t.n, b.start_date) as full_date
     from tally as t
@@ -34,6 +27,7 @@ date_spine as (
     where dateadd(day, t.n, b.start_date) <= b.end_date
 ),
 
+-- Adding additional date attributes to the calendar spine
 dated as (
     select
         full_date,
@@ -45,6 +39,7 @@ dated as (
     from date_spine
 )
 
+-- Final selection of the date attributes, including a month_index for ordering
 select
     date_key,
     full_date,

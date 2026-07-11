@@ -54,7 +54,7 @@ def main():
         print(f"Missing {len(missing)} table(s): {missing}")
         return 0
     else:
-        print("Ready for EDA!")   
+        print("DB Ready!")   
     
     return 1
 

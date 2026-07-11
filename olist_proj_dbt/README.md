@@ -1,5 +1,3 @@
-Welcome to your new dbt project!
-
 ### Before running dbt
 
 This project's Azure SQL database is on a free/serverless tier that auto-pauses

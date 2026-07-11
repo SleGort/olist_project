@@ -1,6 +1,5 @@
 -- dim_seller: base seller attributes + two enrichments from fact_seller_month
 -- (see notebooks/eda.ipynb, "dim_seller enrichment" cells).
-
 with months_active as (
     select
         seller_id,
@@ -9,10 +8,7 @@ with months_active as (
     group by seller_id
 ),
 
--- OLS slope of revenue over month_index, fit on the clean operating band
--- (month_index 4..23) for sellers with >= 12 months of data in that band.
--- b = (n*Sxy - Sx*Sy) / (n*Sxx - Sx^2), normalized by mean revenue.
--- Natural sign kept: negative = declining (at risk). Others -> null.
+-- OLS slope of revenue over month_index
 risk_inputs as (
     select
         seller_id,
