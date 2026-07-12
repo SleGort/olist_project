@@ -4,8 +4,8 @@ An end-to-end analytics project built on the [Olist Brazilian e-commerce
 dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
 (2016–2018). It answers one core business question:
 
-> **Which sellers on the Olist marketplace are at risk of churning, and
-> what can Olist do to retain them?**
+> **Which sellers on the Olist marketplace were declining — and what was
+> driving the decline?**
 
 The project is split into two halves:
 
