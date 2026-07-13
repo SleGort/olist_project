@@ -263,19 +263,17 @@ this project deliberately avoids).
 
 ## HTML profiling reports
 
-`notebooks/eda.ipynb` generates data-profiling reports as standalone HTML
-files — one per dataset, plus before/after cleaning comparisons — saved to
-`notebooks/html_reports/`. These aren't committed to the repo (they're
-regenerated from the notebook as needed) but if you have them locally, you
-can view one from the terminal by typing:
+`notebooks/eda.ipynb` generates a data-profiling report for each raw
+dataset (e.g. orders, customers, sellers) and saves it as a standalone HTML
+file in `notebooks/html_reports/`. These files are committed to the repo,
+so you can view them without running any code. From the repo root, type:
 
 ```
-open <filename>
+open notebooks/html_reports/<filename>
 ```
 
-e.g. `open notebooks/html_reports/olist_orders_dataset.html`. This opens the
-file in your default web browser without needing to launch Python or Power
-BI.
+e.g. `open notebooks/html_reports/orders.html`. This opens the file in your
+default web browser.
 
 ## Other files in this repo
 - **`schema.png`** — how the *raw* Kaggle tables relate to each other
