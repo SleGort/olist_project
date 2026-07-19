@@ -1,6 +1,6 @@
 # Olist Seller Analytics
 
-An end-to-end analytics project built on the [Olist Brazilian e-commerce
+An analytics project built on the [Olist Brazilian e-commerce
 dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
 (2016–2018). It answers one core business question:
 
