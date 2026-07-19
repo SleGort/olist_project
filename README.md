@@ -287,6 +287,6 @@ default web browser.
 
 ![Raw schema](schema.png)
 
-**Final Power BI data model** — the star schema `olist.pbix` is built on:
+**Final Power BI data model** — the fact constellation schema `olist.pbix` is built on:
 
 ![Power BI data model](PBI%20Data%20Model.png)
